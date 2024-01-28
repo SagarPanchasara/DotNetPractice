@@ -15,5 +15,17 @@ namespace DotNetPractice.Controllers
             return userService.List();
         }
 
+        [HttpPost]
+        public IActionResult Save(UserDto userDto)
+        {
+            return Ok(userService.Add(userDto));
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            return Ok(userService.Get(id));
+        }
+
     }
 }
