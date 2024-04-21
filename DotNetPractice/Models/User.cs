@@ -12,6 +12,8 @@ namespace DotNetPractice.Models
         public int Id { get; set; }
 
         [Column("name")]
+        [Required(ErrorMessage = "name is required")]
+        [StringLength(20)]
         public required string Name { get; set; }
 
         [Column("id_number")]

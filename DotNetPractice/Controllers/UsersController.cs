@@ -18,6 +18,10 @@ namespace DotNetPractice.Controllers
         [HttpPost]
         public IActionResult Save(UserDto userDto)
         {
+            if (!string.IsNullOrEmpty(userDto.IdNumber) && !ValidationUtils.IsValidIdNumber(userDto.IdNumber))
+            {
+                return BadRequest("Invalid IDNumber");
+            }
             return Ok(userService.Add(userDto));
         }
 
@@ -25,6 +29,24 @@ namespace DotNetPractice.Controllers
         public IActionResult Get(int id)
         {
             return Ok(userService.Get(id));
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, UserDto userDto)
+        {
+            if (!string.IsNullOrEmpty(userDto.IdNumber) && !ValidationUtils.IsValidIdNumber(userDto.IdNumber))
+            {
+                return BadRequest("Invalid IDNumber");
+            }
+            userService.Update(id, userDto);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            userService.Delete(id);
+            return Ok();
         }
 
     }

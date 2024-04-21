@@ -15,6 +15,10 @@ namespace DotNetPractice.Services
 
         public UserDto Add(UserDto userDto)
         {
+            if (!string.IsNullOrEmpty(userDto.IdNumber) && context.Users.Where(U => U.IdNumber == userDto.IdNumber).Any())
+            {
+                throw new HttpRequestException("IDNumber already exists", null, System.Net.HttpStatusCode.Conflict);
+            }
             Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<Models.User> entityEntry = context.Users.Add(new Models.User()
             {
                 Name = userDto.Name,
@@ -48,5 +52,25 @@ namespace DotNetPractice.Services
             };
         }
 
+        public void Update(int id, UserDto userDto)
+        {
+            if (!string.IsNullOrEmpty(userDto.IdNumber) && context.Users.Where(U => U.IdNumber == userDto.IdNumber && U.Id != id).Any())
+            {
+                throw new HttpRequestException("IDNumber already exists", null, System.Net.HttpStatusCode.Conflict);
+            }
+            var user = FindById(id);
+            user.Name = userDto.Name;
+            user.IdNumber = userDto.IdNumber;
+            context.SaveChanges();
+        }
+
+        public void Delete(int id)
+        {
+            var count = context.Users.Where(U => U.Id == id).ExecuteDelete();
+            if (count == 0)
+            {
+                throw new HttpRequestException("Invalid Id", null, System.Net.HttpStatusCode.BadRequest);
+            }
+        }
     }
 }
