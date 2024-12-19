@@ -17,6 +17,7 @@ namespace DotNetPractice.Models
         public required string Name { get; set; }
 
         [Column("id_number")]
+        [StringLength(13)]
         public string? IdNumber { get; set; }
 
         [Column("created_on")]

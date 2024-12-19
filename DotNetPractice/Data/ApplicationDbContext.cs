@@ -16,7 +16,7 @@ namespace DotNetPractice.Data
             {
                 Server = "localhost",
                 UserID = "root",
-                Password = "example",
+                Password = "root",
                 Database = "practice"
             };
 
