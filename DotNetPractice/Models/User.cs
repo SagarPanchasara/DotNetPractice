@@ -23,6 +23,9 @@ namespace DotNetPractice.Models
         [Column("created_on")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedOn { get; set; }
+        
+        [NotMapped]
+        public String? FormatedCreatedOn { get; set; }
 
     }
 }

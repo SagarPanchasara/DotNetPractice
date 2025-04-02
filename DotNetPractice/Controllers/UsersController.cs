@@ -10,7 +10,7 @@ namespace DotNetPractice.Controllers
     public class UsersController(UserService userService) : ControllerBase
     {
         [HttpGet]
-        public List<Models.User> List()
+        public Task<List<Models.User>> List()
         {
             return userService.List();
         }
@@ -30,22 +30,41 @@ namespace DotNetPractice.Controllers
         {
             return Ok(userService.Get(id));
         }
+        
+        [HttpGet("query")]
+        public async Task<IActionResult> Query([FromQuery(Name = "keyword")] String keyword)
+        {
+            return Ok(await userService.Query(keyword));
+        }
 
         [HttpPut("{id}")]
         public IActionResult Update(int id, UserDto userDto)
         {
-            if (!string.IsNullOrEmpty(userDto.IdNumber) && !ValidationUtils.IsValidIdNumber(userDto.IdNumber))
+            IActionResult result = NotFound();
+            var thread = new Thread(() =>
             {
-                return BadRequest("Invalid IDNumber");
-            }
-            userService.Update(id, userDto);
-            return Ok();
+                if (!string.IsNullOrEmpty(userDto.IdNumber) && !ValidationUtils.IsValidIdNumber(userDto.IdNumber))
+                {
+                    result = BadRequest("Invalid IDNumber");
+                }
+
+                userService.Update(id, userDto);
+                result = Ok();
+            });
+            thread.Start();
+            thread.Join();
+            return result;
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            userService.Delete(id);
+            var thread = new Thread(() =>
+            {
+                userService.Delete(id);
+            });
+            thread.Start();
+            thread.Join();
             return Ok();
         }
 
